@@ -1,4 +1,7 @@
+import 'package:bloc_weather_app/bloc/bloc.dart';
+import 'package:bloc_weather_app/model/weather.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() => runApp(MyApp());
 
@@ -22,6 +25,8 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPageState extends State<WeatherPage> {
+  final weatherBloc = WeatherBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,25 +36,58 @@ class _WeatherPageState extends State<WeatherPage> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Text(
-              "City Name",
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              "35 °C",
-              style: TextStyle(fontSize: 80),
-            ),
-            CityInputField(),
-          ],
+        child: BlocBuilder(
+          bloc: weatherBloc,
+          builder: (BuildContext context, WeatherState state) {
+            if (state is WeatherInitial) {
+              return buildInitialInput();
+            } else if (state is WeatherLoading) {
+              return buildLoading();
+            } else if (state is WeatherLoaded) {
+              return buildColumnWithData(state.weather);
+            }
+          },
         ),
       ),
     );
+  }
+
+  Widget buildInitialInput() {
+    return Center(
+      child: CityInputField(),
+    );
+  }
+
+  Widget buildLoading() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Column buildColumnWithData(Weather weather) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Text(
+          weather.cityName,
+          style: TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Text(
+          "${weather.temperature.toStringAsFixed(1)} °C",
+          style: TextStyle(fontSize: 80),
+        ),
+        CityInputField(),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    weatherBloc.dispose();
   }
 }
 
