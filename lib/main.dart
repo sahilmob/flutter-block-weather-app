@@ -33,20 +33,23 @@ class _WeatherPageState extends State<WeatherPage> {
       appBar: AppBar(
         title: Text("Fake Weather App"),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        alignment: Alignment.center,
-        child: BlocBuilder(
-          bloc: weatherBloc,
-          builder: (BuildContext context, WeatherState state) {
-            if (state is WeatherInitial) {
-              return buildInitialInput();
-            } else if (state is WeatherLoading) {
-              return buildLoading();
-            } else if (state is WeatherLoaded) {
-              return buildColumnWithData(state.weather);
-            }
-          },
+      body: BlocProvider(
+        builder: (context) => weatherBloc,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          alignment: Alignment.center,
+          child: BlocBuilder(
+            bloc: weatherBloc,
+            builder: (BuildContext context, WeatherState state) {
+              if (state is WeatherInitial) {
+                return buildInitialInput();
+              } else if (state is WeatherLoading) {
+                return buildLoading();
+              } else if (state is WeatherLoaded) {
+                return buildColumnWithData(state.weather);
+              }
+            },
+          ),
         ),
       ),
     );
@@ -118,6 +121,7 @@ class _CityInputFieldState extends State<CityInputField> {
   }
 
   void submitCityName(String cityName) {
-    // We will use the city name to search for the fake forecast
+    final weatherBloc = BlocProvider.of<WeatherBloc>(context);
+    weatherBloc.dispatch(GetWeather(cityName: cityName));
   }
 }
