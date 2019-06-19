@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_weather_app/model/weather.dart';
 import './bloc.dart';
@@ -20,7 +21,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<Weather> _fetchWatherFromFakeApi(String cityName) {
     return Future.delayed(Duration(seconds: 2), () {
-      return Weather(cityName: cityName, temperature: 32);
+      return Weather(
+          cityName: cityName,
+          temperature: 20 + Random().nextInt(15) + Random().nextDouble());
     });
   }
 }

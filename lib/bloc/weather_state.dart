@@ -11,8 +11,8 @@ class WeatherInitial extends WeatherState {}
 
 class WeatherLoading extends WeatherState {}
 
-class WeatherLaoded extends WeatherState {
+class WeatherLoaded extends WeatherState {
   final Weather weather;
 
-  WeatherLaoded(this.weather) : super([weather]);
+  WeatherLoaded(this.weather) : super([weather]);
 }
