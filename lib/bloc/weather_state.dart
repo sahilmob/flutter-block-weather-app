@@ -1,3 +1,4 @@
+import 'package:bloc_weather_app/model/weather.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -6,4 +7,12 @@ abstract class WeatherState extends Equatable {
   WeatherState([List props = const []]) : super(props);
 }
 
-class InitialWeatherState extends WeatherState {}
+class WeatherInitial extends WeatherState {}
+
+class WeatherLoading extends WeatherState {}
+
+class WeatherLaoded extends WeatherState {
+  final Weather weather;
+
+  WeatherLaoded(this.weather) : super([weather]);
+}
